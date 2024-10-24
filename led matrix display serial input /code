@@ -1,0 +1,43 @@
+#include <MD_Parola.h>
+#include <MD_MAX72XX.h>
+#include <SPI.h>
+
+// Define hardware type, number of devices, and pins used
+#define HARDWARE_TYPE MD_MAX72XX::FC16_HW
+#define MAX_DEVICES 4  // Number of 8x8 LED matrices in use (adjust based on your setup)
+#define CS_PIN 10      // Pin for CS (Chip Select)
+
+// Create an MD_Parola object
+MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
+
+void setup() {
+  // Initialize serial communication at 9600 baud rate
+  Serial.begin(9600);
+  // Initialize the LED matrix
+  myDisplay.begin();
+  myDisplay.setIntensity(5);     // Set brightness (0-15)
+  myDisplay.displayClear();      // Clear display
+  Serial.println("Enter text to display on the LED matrix:");
+}
+
+void loop() {
+  // Check if data is available from serial input
+  if (Serial.available() > 0) {
+    String input = Serial.readStringUntil('\n');  // Read user input until newline
+    input.trim();  // Remove any extra spaces or newlines
+    
+    // Display the input on the LED matrix
+    myDisplay.displayClear();    // Clear previous content
+    myDisplay.print(input.c_str());  // Display the string on the LED matrix
+    
+    // Serial print what was entered for reference
+    Serial.print("Displaying: ");
+    Serial.println(input);
+    delay(1000);
+  }
+
+  // Update the display to keep the text moving if needed
+  if (myDisplay.displayAnimate()) {
+    myDisplay.displayReset();
+  }
+}
