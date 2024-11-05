@@ -24,6 +24,7 @@ void loop() {
   // Calculate the distance (no intermediate formula needed)
   long distance = duration / 29 / 2;
   int waterlevel=15-distance;
+  //here 15cm is distance of our container
 
   // Print the distance in the Serial Monitor
   Serial.print("Distance: ");
